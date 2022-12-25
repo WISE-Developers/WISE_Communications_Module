@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+option java_package = "ca.wise.comms.server.proto";
+option csharp_namespace = "WISE.Comms.ServerProto";
+option java_multiple_files = true;
+
+import "google/protobuf/wrappers.proto";
+
+package WISE.Comms.ServerProto;
+
+/**
+ * A wrapper around a file upload request from W.I.S.E.
+ * to W.I.S.E. Manager.
+ */
+message FileUpload {
+    //The name of the job that the file is for.
+    //Will be used to find the correct receiver as well as to find the file in the job directory.
+    string job = 1;
+
+    //The name of the file to upload, including all subfolders within the jobs folder.
+    string filename = 2;
+
+    //An array of methods to use to upload the file.
+    repeated UploadType upload_type = 3;
+
+    //The type of file to upload
+    FileType filetype = 4;
+
+    //Does the file exist or was it skipped because it would be empty
+    bool exists = 5;
+
+    //Information about the file upload.
+    message UploadType {
+        oneof type {
+            MQTTUpload mqtt = 1;
+            GeoserverUpload geoserver = 2;
+        }
+    }
+
+    enum FileType {
+        Unknown = 0;
+        Summary = 1;
+        Vector = 2;
+        Grid = 3;
+    }
+}
+
+/**
+ * A message that will be passed from W.I.S.E. to Manager to
+ * initialize a file upload through MQTT.
+ */
+message MQTTUpload {
+    //An optional username to use to authenticate with the MQTT broker.
+    string username = 1;
+
+    //An optional password to use to authenticate with the MQTT broker.
+    string password = 2;
+}
+
+/**
+ * A message that will be passed from W.I.S.E. to Manager to
+ * initialize a file upload to a GeoServer instance.
+ */
+message GeoserverUpload {
+    //A username to authenticate on the geoserver with.
+    string username = 1;
+
+    //A password to authenticate on the geoserver with.
+    string password = 2;
+
+    //The base URL of the geoserver instance. The address of the rest API should be {url}/rest.
+    string url = 3;
+
+    //The workspace to load the file into.
+    string workspace = 4;
+
+    //The name of the coverage store to create or update.
+    string coverage = 5;
+
+    //The declared spatial reference system for the added coverage.
+    string srs = 6;
+
+    //An override for the coverage store if a vector file is being uploaded.
+    google.protobuf.StringValue vector_coverage = 7;
+
+    //An override for the coverage store if a raster file is being uploaded.
+    google.protobuf.StringValue raster_coverage = 8;
+}

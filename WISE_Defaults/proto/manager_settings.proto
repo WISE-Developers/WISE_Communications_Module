@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_package = "ca.wise.settings.proto";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+package WISE.settings;
+
+/**
+ * Settings for exporting/importing in W.I.S.E. Manager.
+ */
+message ManagerSettings {
+
+    //The job storage directory
+    string jobDirectory = 3;
+
+    //The last time that this file was updated
+    google.protobuf.Timestamp lastUpdate = 11;
+}

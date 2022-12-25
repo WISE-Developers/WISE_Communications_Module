@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+option java_package = "ca.wise.comms.server.proto";
+option java_multiple_files = true;
+
+import "google/protobuf/wrappers.proto";
+
+package WISE.Comms.ValidationProto;
+
+/**
+ * A report generated after a request to validate an FGM.
+ */
+message ValidationReport {
+    /**
+     * Was the validaty of FGM able to be checked.
+     * If W.I.S.E. is too old to run validity checks
+     * this may be false.
+     */
+    bool success = 1;
+    /**
+     * Is the FGM valid.
+     */
+    bool valid = 2;
+    /**
+     * User readable warnings generated during load.
+     * Absent if there weren't any. Load warnings
+     * can be generated even if the FGM is valid.
+     */
+    google.protobuf.StringValue load_warnings = 3;
+    /**
+     * A tree of issues found in the FGM. Will be
+     * absent if the FGM is valid.
+     */
+    ValidationNode validation_tree = 4;
+
+    /**
+     * A node of the tree of validated objects. Leaf nodes
+     * will be errors, others will show the hierarchy that
+     * contained the error.
+     */
+    message ValidationNode {
+        
+        /**
+         * The severity of the error present at this node.
+         */
+        ErrorLevel error_level = 1;
+
+        /**
+         * The name of the protobuf type that found/caused
+         * the error.
+         */
+        string protobuf_name = 2;
+
+        /**
+         * Values that were incorrect and caused the error.
+         */
+        repeated ErrorObject error_values = 3;
+
+        /**
+         * An ID that identifies the type of error found.
+         * Will only be present on leaf nodes.
+         */
+        google.protobuf.StringValue error_id = 4;
+
+        /**
+         * Child validation nodes.
+         */
+        repeated ValidationNode children = 5;
+
+        /**
+         * A human readable, optional value containing details of the error.
+         * No format guarantee is made of the details and they may change at
+         * any time.
+         */
+        google.protobuf.StringValue details = 6;
+
+        /**
+         * Details of an object that caused the error.
+         */
+        message ErrorObject {
+
+            /**
+             * The name of the object that caused the error.
+             */
+            string name = 1;
+
+            /**
+             * The value that caused the error.
+             */
+            google.protobuf.StringValue value = 2;
+        }
+
+        enum ErrorLevel {
+            //No error was present here
+            NONE = 0;
+            //This is just an information message
+            INFORMATION = 1;
+            //This may cause unexpected results but W.I.S.E. will continue loading afterwards
+            WARNING = 2;
+            //This error would cause an immidiate abort of loading the FGM.
+            SEVERE = 3;
+        }
+    }
+}

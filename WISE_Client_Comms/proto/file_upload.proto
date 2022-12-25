@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+option java_package = "ca.wise.comms.client.proto";
+option csharp_namespace = "WISE.Comms.ClientProto";
+option java_multiple_files = true;
+
+import "google/protobuf/wrappers.proto";
+
+package WISE.Comms.ClientProto;
+
+/**
+ * A request from W.I.S.E. Manager to stream a file
+ * to anyone who wants it.
+ */
+message FileStreamRequest {
+    //The unique identifier for the job
+    string job = 1;
+
+    //The name of the file including any relative paths within the job directory
+    string filename = 2;
+
+    //The size of the file in bytes
+    int64 file_size = 3;
+
+    //The file output occurred but the file was empty, so the actual write was skipped (no file exists for the write request)
+    bool was_skipped = 4;
+}
+
+/**
+ * A response to W.I.S.E. Manager that you are
+ * looking to receive the file over MQTT.
+ */
+message FileStreamResponse {
+    //The unique identifier for the job that created the file
+    string job = 1;
+
+    //The name of the file including any relative paths within the job directory
+    string filename = 2;
+
+    //The offset into the file (in bytes) to start returning from
+    int64 offset = 3;
+
+    //RPC server address to use for transferring the file if available
+    google.protobuf.StringValue rpc_address = 4;
+
+    //RPC server address to use for transferring a file within the local network
+    google.protobuf.StringValue internal_rpc_address = 5;
+
+    //Compress the stream transferred over MQTT
+    google.protobuf.BoolValue compress_stream = 6;
+}
+
+/**
+ * A chunk of the file.
+ */
+message FileStream {
+    //The unique identifier for the job that created the file
+    string job = 1;
+
+    //The name of the file including any relative paths within the job directory
+    string filename = 2;
+
+    //Has the end of the file been reached
+    bool is_end_of_file = 3;
+
+    //The size of the file in bytes
+    int64 file_size = 4;
+
+    //A set of bytes from the file starting at the requested offset
+    bytes data = 5;
+
+    //Has the stream been compressed
+    google.protobuf.BoolValue compress_stream = 6;
+}
