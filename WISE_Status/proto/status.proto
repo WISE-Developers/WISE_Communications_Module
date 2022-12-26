@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+option java_package = "ca.wise.status.proto";
+option csharp_namespace = "WISE.StatusProto";
+option java_multiple_files = true;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+package WISE.StatusProto;
+
+/**
+ * Wrapper for the status file.
+ */
+message jobStatus {
+
+    /**
+     * The list of status and informational messages.
+     */
+    repeated statusEntry entries = 1;
+
+    /**
+     * The different status that the job can have.
+     */
+    enum statusType {
+        /**
+         * The job was submitted to the manager.
+         */
+        SUBMITTED = 0;
+        /**
+         * A new job has been started. This will be the current status when Prometheus starts up.
+         */
+        STARTED = 1;
+        /**
+         * A new scenario has started.
+         */
+        SCENARIO_STARTED = 2;
+        /**
+         * A scenario has finished.
+         */
+        SCENARIO_COMPLETED = 3;
+        /**
+         * A scenario failed to finish properly.
+         */
+        SCENARIO_FAILED = 4;
+        /**
+         * The job has completed successfully.
+         */
+        COMPLETE = 5;
+        /**
+         * Prometheus ended in an unexpected manner. This shouldn't be used by Prometheus, the manager will mark the job as Failed if the process
+         * is terminated without being marked as either Complete or Error.
+         */
+        FAILED = 6;
+        /**
+         * An exception was caught within Prometheus and the job was terminated.
+         */
+        ERROR = 7;
+        /**
+         * An informational note.
+         */
+        INFORMATION = 8;
+        /**
+         * The simulation has been requested to stop.
+         */
+        SHUTDOWN_REQUESTED = 9;
+    }
+
+    /**
+     * An update to the status of the running job.
+     */
+    message statusUpdate {
+        /**
+         * The time that the new status was reported.
+         */
+        google.protobuf.Timestamp time = 1;
+        /**
+         * The new status.
+         */
+        statusType status = 2;
+        /**
+         * An optional information message about the status update.
+         * The message contents will depend on what the new status is
+         * as well as what part of Prometheus is reporting the status.
+         */
+        google.protobuf.StringValue data = 3;
+    }
+
+    /**
+     * A message for reporting information about the running job
+     * that is not necessarily tied to a status update.
+     */
+    message statusInformation {
+        /**
+         * The time that the new status was reported.
+         */
+        google.protobuf.Timestamp time = 1;
+        /**
+         * The information message.
+         */
+        string data = 2;
+    }
+
+    /**
+     * An entry in the status file. Will be either a status update or a general information message.
+     */
+    message statusEntry {
+
+        oneof entry {
+            statusUpdate status = 1;
+            statusInformation information = 2;
+        }
+    }
+}
