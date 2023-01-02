@@ -19,7 +19,7 @@
 #pragma once
 
 #ifdef _MANAGED
-namespace CWFGM {
+namespace WISE {
 	namespace StatusProto {
 		class jobStatus;
 		class jobStatus_statusType;
