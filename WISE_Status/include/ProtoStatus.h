@@ -29,6 +29,7 @@ namespace WISE {
 #include "status.pb.h"
 #endif
 
+#include <fstream>
 #include <string>
 
 
