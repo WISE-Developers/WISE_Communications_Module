@@ -12,7 +12,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 SET(PROTOBUF_INCLUDE_DIR "error" CACHE STRING "The path to the protobuf include files")
 SET(LOWLEVEL_INCLUDE_DIR "error" CACHE STRING "The path to the includes from HSS LowLevel")
 SET(THIRD_PARTY_INCLUDE_DIR "error" CACHE STRING "The path to third party include files")
-SET(BOOST_LIBRARY_DIR "error" CACHE STRING "The path to boost include files")
+SET(BOOST_INCLUDE_DIR "error" CACHE STRING "The path to boost include files")
 
 if (MSVC)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNOMINMAX -DPROTOBUF_USE_DLLS -D_CRT_SECURE_NO_WARNINGS /Zc:__cplusplus")
@@ -31,7 +31,7 @@ target_include_directories(protostatus
     PUBLIC ${PROTOBUF_INCLUDE_DIR}
     PUBLIC ${LOWLEVEL_INCLUDE_DIR}
     PUBLIC ${THIRD_PARTY_INCLUDE_DIR}
-    PUBLIC ${BOOST_LIBRARY_DIR}
+    PUBLIC ${BOOST_INCLUDE_DIR}
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
