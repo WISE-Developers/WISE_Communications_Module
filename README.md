@@ -1,6 +1,7 @@
 # W.I.S.E. Communications Module
 
 Libraries to faciliate communication between different components of W.I.S.E. and for persisting settings to disk.
+WISE_Communications_Module formerly known as Communications
 
 ## Contents
 
